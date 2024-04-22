@@ -60,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
         }
         
         if (jumpInput > 0 && grounded)
-            rb.AddForce (Vector3.up * jumpSpeed, ForceMode.Impulse);
+            rb.AddForce (Vector3.up * jumpSpeed, ForceMode.Impulse);        
     }
 
     private void ApplyFriction()
