@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundDecay;
     [SerializeField] private float gravityMultiplier;
     [SerializeField] private LayerMask groundMask;
+    [SerializeField] private ParticleSystem stepParticles;
 
     private CapsuleCollider capsuleCollider;
     private bool grounded;
@@ -35,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Inputs();
         GroundCheck();
+        Particles();
     }
 
     private void FixedUpdate()
@@ -87,5 +89,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!grounded)
             rb.AddForce(Vector3.down * gravityMultiplier, ForceMode.Force);
+    }
+
+    private void Particles()
+    {
+        Vector3 vel = rb.velocity;
+
+        if (grounded && Mathf.Abs(vel.x) == moveSpeed)
+            stepParticles.Play();
     }
 }
