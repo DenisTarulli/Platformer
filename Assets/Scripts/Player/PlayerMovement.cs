@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform visualTransform;
     [SerializeField] private float rotationSmoothingSpeed;
     private Vector3 rotation;
-    private float yRotation = -90f;
+    private float yRotation;
 
     [Header("Animations")]
     [SerializeField] private Animator anim;
@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
         GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
-        
+        yRotation = -90f;
     }
 
     private void Update()
