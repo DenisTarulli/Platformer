@@ -15,4 +15,12 @@ public abstract class Enemy : MonoBehaviour
         if (currentHealth <= 0)
             Destroy(gameObject);
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!collision.gameObject.CompareTag("Player")) return;
+
+        if (collision.gameObject.TryGetComponent(out PlayerCombat playerCombat))
+            playerCombat.PlayerTakeDamage();
+    }
 }

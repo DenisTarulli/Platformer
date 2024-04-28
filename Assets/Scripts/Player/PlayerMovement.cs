@@ -104,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void GroundCheck()
     {
-        float extraHeight = 0.15f;
+        float extraHeight = 0.2f;
         grounded = Physics.Raycast(capsuleCollider.bounds.center, Vector3.down, capsuleCollider.bounds.extents.y + extraHeight, groundMask);        
     }
 
