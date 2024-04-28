@@ -54,10 +54,10 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         Inputs();
-        GroundCheck();
         Particles();
         VisualRotation();
         Animations();
+        GroundCheck();
     }
 
     private void FixedUpdate()
@@ -104,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void GroundCheck()
     {
-        float extraHeight = 0.05f;
+        float extraHeight = 0.15f;
         grounded = Physics.Raycast(capsuleCollider.bounds.center, Vector3.down, capsuleCollider.bounds.extents.y + extraHeight, groundMask);        
     }
 
