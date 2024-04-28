@@ -11,8 +11,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float acceleration;
     [SerializeField] private float jumpSpeed;
     private Rigidbody rb;
-    private Vector2 moveDirection;
-    private float jumpInput;
 
     [Header("Drag")]
     [SerializeField] private float groundDecay;
@@ -29,24 +27,28 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 rotation;
     private float yRotation = -90f;
 
-    [Header("Inputs")]
-    private PlayerInput playerInput;
-    private InputAction moveAction;
-    private InputAction jumpAction;
-
     [Header("Animations")]
     [SerializeField] private Animator anim;
     [SerializeField] private ParticleSystem stepParticles;
     [SerializeField] private float jumpToFallAnimSmoothing;
 
+    [Header("Inputs")]
+    PlayerInputs playerInputActions;
+    private Vector2 inputVector;
+
+    private void Awake()
+    {
+        playerInputActions = new PlayerInputs();
+        playerInputActions.Player.Enable();
+        playerInputActions.Player.Jump.performed += Jump;
+    }
 
     private void Start()
     {
-        playerInput = GetComponent<PlayerInput>();
-        moveAction = playerInput.actions.FindAction("Move");
-        jumpAction = playerInput.actions.FindAction("Jump");
+        GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
+        
     }
 
     private void Update()
@@ -60,25 +62,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovePlayer();
+        Movement();
         ApplyFriction();
         GravityCompensation();
     }
 
     private void Inputs()
     {
-        moveDirection = moveAction.ReadValue<Vector2>();
-        jumpInput = jumpAction.ReadValue<float>();
+        inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
     }
 
-    private void MovePlayer()
-    {     
-        if (Mathf.Abs(moveDirection.x) > 0)
+    private void Movement()
+    {
+        if (Mathf.Abs(inputVector.x) > 0)
         {
-            float increment = moveDirection.x * acceleration;
+            float increment = inputVector.x * acceleration;
             float newSpeed = Mathf.Clamp(rb.velocity.x + increment, -maxSpeed, maxSpeed);
-            rb.velocity = new Vector3(newSpeed, rb.velocity.y, 0f);              
-        }    
+            rb.velocity = new Vector3(newSpeed, rb.velocity.y, 0f);
+        }
     }
 
     public void Jump(InputAction.CallbackContext context)
@@ -91,10 +92,10 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 vel = rb.velocity;
 
-        if (grounded && moveDirection.x == 0)
+        if (grounded && inputVector.x == 0)
             rb.velocity *= groundDecay;
 
-        if (!grounded && moveDirection.x == 0)
+        if (!grounded && inputVector.x == 0)
         {
             vel.x *= groundDecay;
             rb.velocity = vel;
@@ -126,13 +127,13 @@ public class PlayerMovement : MonoBehaviour
         float targetRotationRight = -90f;
         float targetRotationLeft = 90f;
 
-        if (moveDirection.x > 0 && (yRotation > targetRotationRight))
+        if (inputVector.x > 0 && (yRotation > targetRotationRight))
         {
             yRotation -= Time.deltaTime * rotationSmoothingSpeed;
             if (yRotation < targetRotationRight)
                 yRotation = targetRotationRight;
         }
-        if (moveDirection.x < 0 && (yRotation < targetRotationLeft))
+        if (inputVector.x < 0 && (yRotation < targetRotationLeft))
         {
             yRotation += Time.deltaTime * rotationSmoothingSpeed;
             if (yRotation > targetRotationLeft)
