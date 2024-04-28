@@ -6,28 +6,39 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] private float maxSpeed;
     [SerializeField] private float acceleration;
     [SerializeField] private float jumpSpeed;
-    [SerializeField] private float jumpInput;
+    private Rigidbody rb;
+    private Vector2 moveDirection;
+    private float jumpInput;
+
+    [Header("Drag")]
     [SerializeField] private float groundDecay;
     [SerializeField] private float gravityMultiplier;
-    [SerializeField] private float rotationSmoothingSpeed;
-    [SerializeField] private LayerMask groundMask;
-    [SerializeField] private ParticleSystem stepParticles;
-    [SerializeField] private Animator anim;
-    [SerializeField] private Transform visualTransform;
 
-    private CapsuleCollider capsuleCollider;
+    [Header("Ground check")]
+    [SerializeField] private LayerMask groundMask;
     private bool grounded;
+    private CapsuleCollider capsuleCollider;
+
+    [Header("Rotation")]
+    [SerializeField] private Transform visualTransform;
+    [SerializeField] private float rotationSmoothingSpeed;
+    private Vector3 rotation;
+    private float yRotation = -90f;
+
+    [Header("Inputs")]
     private PlayerInput playerInput;
     private InputAction moveAction;
     private InputAction jumpAction;
-    private Rigidbody rb;
-    private Vector2 moveDirection;
-    private Vector3 rotation;
-    private float yRotation = -90f;
-    
+
+    [Header("Animations")]
+    [SerializeField] private Animator anim;
+    [SerializeField] private ParticleSystem stepParticles;
+    [SerializeField] private float jumpToFallAnimSmoothing;
+
 
     private void Start()
     {
@@ -44,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
         GroundCheck();
         Particles();
         VisualRotation();
+        Animations();
     }
 
     private void FixedUpdate()
@@ -66,12 +78,13 @@ public class PlayerMovement : MonoBehaviour
             float increment = moveDirection.x * acceleration;
             float newSpeed = Mathf.Clamp(rb.velocity.x + increment, -maxSpeed, maxSpeed);
             rb.velocity = new Vector3(newSpeed, rb.velocity.y, 0f);              
-        }
-        
-        if (jumpInput > 0 && grounded)
-            rb.AddForce (Vector3.up * jumpSpeed, ForceMode.Impulse);
+        }    
+    }
 
-        anim.SetFloat("horizontal", Mathf.Abs(rb.velocity.x) / maxSpeed);
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if (context.performed && grounded)
+            rb.AddForce(Vector3.up * jumpSpeed, ForceMode.Impulse);
     }
 
     private void ApplyFriction()
@@ -129,5 +142,12 @@ public class PlayerMovement : MonoBehaviour
         rotation = new Vector3(0f, yRotation, 0f);
 
         visualTransform.localRotation = Quaternion.Euler(rotation);
+    }
+
+    private void Animations()
+    {
+        anim.SetFloat("horizontal", Mathf.Abs(rb.velocity.x) / maxSpeed);
+        anim.SetFloat("vertical", rb.velocity.y / jumpToFallAnimSmoothing);
+        anim.SetBool("isJumping", !grounded);
     }
 }
