@@ -7,9 +7,11 @@ public class PlayerCombat : MonoBehaviour
 {
     [Header("Stats")]
     [SerializeField] private int maxHealth;
+    [SerializeField] private float invulnerabilityTime;
     private int currentHealth;
     public float attackDamage;
-    private bool attacking = false;
+    [HideInInspector] public bool attacking = false;
+    private bool invulnerable = false;
 
     [Header("Animations")]
     [SerializeField] private Animator anim;
@@ -17,6 +19,9 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Inputs")]
     private PlayerInputs playerInputActions;
+
+    [Header("UI")]
+    private UpdateUI updateUI;
 
     private void Awake()
     {
@@ -27,6 +32,7 @@ public class PlayerCombat : MonoBehaviour
 
     private void Start()
     {
+        updateUI = FindObjectOfType<UpdateUI>();
         currentHealth = maxHealth;
     }
 
@@ -51,7 +57,21 @@ public class PlayerCombat : MonoBehaviour
 
     public void PlayerTakeDamage()
     {
+        if (invulnerable) return;
+
         currentHealth--;
+        updateUI.HealthUpdate(currentHealth);
+
+        StartCoroutine(nameof(Invulnerability));
         Debug.Log(currentHealth);
+    }
+
+    private IEnumerator Invulnerability()
+    {
+        invulnerable = true;
+
+        yield return new WaitForSeconds(invulnerabilityTime);
+
+        invulnerable = false;
     }
 }
