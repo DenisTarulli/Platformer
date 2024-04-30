@@ -22,6 +22,7 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("UI")]
     private UpdateUI updateUI;
+    private PauseMenu pauseMenu;
 
     private void Awake()
     {
@@ -33,12 +34,13 @@ public class PlayerCombat : MonoBehaviour
     private void Start()
     {
         updateUI = FindObjectOfType<UpdateUI>();
+        pauseMenu = FindObjectOfType<PauseMenu>();
         currentHealth = maxHealth;
     }
 
     public void Attack(InputAction.CallbackContext context)
     {
-        if (context.performed && !attacking)
+        if (context.performed && !attacking && !pauseMenu.gameIsPaused)
         {
             StartCoroutine(nameof(AttackAction));
         }

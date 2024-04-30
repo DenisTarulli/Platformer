@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestEnemy : Enemy
+public class FlyingEnemy : Enemy
 {
     private void Start()
     {

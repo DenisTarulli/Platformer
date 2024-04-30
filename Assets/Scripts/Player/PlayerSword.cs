@@ -10,7 +10,10 @@ public class PlayerSword : MonoBehaviour
     {
         if (!collision.gameObject.CompareTag("Enemy")) return;
 
-        if (collision.gameObject.TryGetComponent(out TestEnemy enemy) && playerCombat.attacking)
-            enemy.EnemyTakeDamage(playerCombat.attackDamage);
+        if (collision.gameObject.TryGetComponent(out GroundEnemy groundEnemy) && playerCombat.attacking)
+            groundEnemy.EnemyTakeDamage(playerCombat.attackDamage);
+
+        if (collision.gameObject.TryGetComponent(out FlyingEnemy flyingEnemy) && playerCombat.attacking)
+            flyingEnemy.EnemyTakeDamage(playerCombat.attackDamage);
     }
 }
