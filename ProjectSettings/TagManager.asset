@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - Gem
+  - pwp_Attack
   layers:
   - Default
   - TransparentFX

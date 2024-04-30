@@ -76,4 +76,17 @@ public class PlayerCombat : MonoBehaviour
 
         invulnerable = false;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        switch (other.gameObject.tag.ToString())
+        {
+            case "Gem":
+                other.GetComponentInParent<Gem>().Collect();
+                break;
+            case "pwp_Attack":
+                other.GetComponentInParent<AttackPowerUp>().PickPwp();
+                break;
+        }
+    }
 }
