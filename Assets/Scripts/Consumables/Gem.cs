@@ -13,6 +13,7 @@ public class Gem : MonoBehaviour
     }
     public void Collect()
     {
+        GameManager.Instance.AddGem();
         collectionParticles.Play();
         gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
         Destroy(gameObject, destroyDelay);
