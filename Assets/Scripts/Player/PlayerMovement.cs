@@ -151,4 +151,12 @@ public class PlayerMovement : MonoBehaviour
         anim.SetFloat("vertical", rb.velocity.y / jumpToFallAnimSmoothing);
         anim.SetBool("isJumping", !grounded);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Gem"))
+        {
+            other.GetComponentInParent<Gem>().Collect();
+        }
+    }
 }
