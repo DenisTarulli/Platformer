@@ -8,7 +8,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("Stats")]
     [SerializeField] private int maxHealth;
     [SerializeField] private float invulnerabilityTime;
-    private int currentHealth;
+    [HideInInspector] public int currentHealth;
     public float attackDamage;
     [HideInInspector] public bool attacking = false;
     private bool invulnerable = false;
@@ -63,6 +63,8 @@ public class PlayerCombat : MonoBehaviour
 
         currentHealth--;
         updateUI.HealthUpdate(currentHealth);
+        if (currentHealth <= 0)
+            GameManager.Instance.GameOver();
 
         StartCoroutine(nameof(Invulnerability));
         Debug.Log(currentHealth);
@@ -86,6 +88,9 @@ public class PlayerCombat : MonoBehaviour
                 break;
             case "pwp_Attack":
                 other.GetComponentInParent<AttackPowerUp>().PickPwp();
+                break;
+            case "Goal":
+                GameManager.Instance.GameOver();
                 break;
         }
     }

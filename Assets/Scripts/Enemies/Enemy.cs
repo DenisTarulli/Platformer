@@ -16,11 +16,12 @@ public abstract class Enemy : MonoBehaviour
     protected float yRotation;
     protected Rigidbody rb;
     protected Transform currentDestination;
+    protected EnemyHealthBar healthBar;
 
     public void EnemyTakeDamage(float damage)
     {
         currentHealth -= damage;
-        Debug.Log(currentHealth);
+        healthBar.UpdateHealthBar(currentHealth, maxHealth);
 
         if (currentHealth <= 0)
             Destroy(gameObject);
