@@ -822,7 +822,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 50
-  moveSpeed: 4
+  moveSpeed: 3
   rotationSmoothingSpeed: 900
   pointA: {fileID: 428626601936894049}
   pointB: {fileID: 2271697193968266030}

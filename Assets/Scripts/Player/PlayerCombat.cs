@@ -16,6 +16,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("Animations")]
     [SerializeField] private Animator anim;
     [SerializeField] private float attackAnimDuration;
+    [SerializeField] private ParticleSystem swordTrail;
 
     [Header("Inputs")]
     private PlayerInputs playerInputActions;
@@ -38,9 +39,14 @@ public class PlayerCombat : MonoBehaviour
         currentHealth = maxHealth;
     }
 
+    private void Update()
+    {
+        FallCheck();
+    }
+
     public void Attack(InputAction.CallbackContext context)
     {
-        if (context.performed && !attacking && !pauseMenu.gameIsPaused)
+        if (context.performed && !attacking && !pauseMenu.gameIsPaused && !GameManager.Instance.gameIsOver)
         {
             StartCoroutine(nameof(AttackAction));
         }
@@ -50,6 +56,7 @@ public class PlayerCombat : MonoBehaviour
     {
         anim.SetBool("isAttacking", true);
         attacking = true;
+        swordTrail.Play();
 
         yield return new WaitForSeconds(attackAnimDuration);
 
@@ -65,9 +72,8 @@ public class PlayerCombat : MonoBehaviour
         updateUI.HealthUpdate(currentHealth);
         if (currentHealth <= 0)
             GameManager.Instance.GameOver();
-
-        StartCoroutine(nameof(Invulnerability));
-        Debug.Log(currentHealth);
+        else
+            StartCoroutine(nameof(Invulnerability));
     }
 
     private IEnumerator Invulnerability()
@@ -92,6 +98,14 @@ public class PlayerCombat : MonoBehaviour
             case "Goal":
                 GameManager.Instance.GameOver();
                 break;
+        }
+    }
+    private void FallCheck()
+    {
+        if (transform.position.y < -5f)
+        {
+            currentHealth = 0;
+            GameManager.Instance.GameOver();
         }
     }
 }
